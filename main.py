@@ -1,4 +1,5 @@
 import parse
+import token
 
 
 
@@ -12,7 +13,5 @@ while True:
         break
     contents.append(line)
 
-
-for con in contents:
-    token = parse.Parse(con)
-    token.parser()
+result = parse.run(contents)
+print(result)
