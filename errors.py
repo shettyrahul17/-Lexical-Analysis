@@ -1,4 +1,4 @@
- 
+import parse 
 
 class Error:
 
@@ -9,9 +9,14 @@ class Error:
         self.details = details
 
     def as_string(self):
-        result = f"{self.error_name}: {self.details}"
+        result = f"\n{self.error_name}: {self.details}\n"
+        result += f"'<stdin>', line  {self.pos_start}, col {self.pos_end}"
         return result
 
 class IllegalError(Error):
     def __init__(self, pos_start,pos_end,error_name, details):
-        super().__init__("Illegal Character", details)
+        super().__init__(pos_start,pos_end,"Illegal Character", details)
+
+class IdentifierError(Error):
+    def __init__(self, pos_start, pos_end, error_name, details):
+        super().__init__(pos_start, pos_end, error_name, details)

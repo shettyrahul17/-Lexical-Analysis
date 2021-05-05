@@ -1,6 +1,7 @@
 import token
 
 
+
 class Position:
 
     def __init__(self,idx,ln,col):
@@ -20,6 +21,12 @@ class Position:
     def copy(self):
         return Position(self.idx,self.ln,self.col)
 
+
+#==============================================================
+# Lexer Class
+#==============================================================
+
+
 class Lexer:
     def __init__(self, code):
         self.code = code
@@ -27,27 +34,31 @@ class Lexer:
         self.len = len(self.code)
         self.pos = Position(-1,0,-1)
         self.current_char = None
+        self.move()
 
     def move(self):
-        self.pos.move(self.current_char) 
+        self.pos.move(self.current_char)
         self.current_char = self.code[self.pos.idx] if self.pos.idx < self.len else None
         
     def get_token_atrr(self,ch):
         attributes = self.tokenObjects.attr_
-        print("hell")
+        pos_start = self.pos.ln+1
         for key in attributes.keys():
-            if key(ch):
+            if key(pos_start,self.pos.col,ch):
                 return attributes[key]
         return
 
     def make_tokens(self):
         tokens = {}
-
+        i = 0
         while self.current_char != None:
-            if self.current_char is "\t":
+            if self.current_char == "\t":
                 self.move()
             else:
-                tokens[self.current_char] = self.get_token_atrr(self.current_char)
+                if self.tokenObjects.isDelimiter(self.code[self.pos.idx]):
+                    tok = self.code[i:self.pos.idx].strip()
+                    if self.get_token_atrr(tok): tokens[tok] = self.get_token_atrr(tok)
+                    i = self.pos.col
                 self.move()
         return tokens
 

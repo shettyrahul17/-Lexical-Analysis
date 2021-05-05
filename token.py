@@ -1,4 +1,6 @@
 # This is used to check attributes of Tokens.
+import re
+import errors
 
 class Tokens:
 
@@ -15,33 +17,39 @@ class Tokens:
         self.attr_ = {
             self.isOperator: "Operator",
             self.isKeyword: "Keyword",
-            self.isInteger: "Integer",
-            self.isFloat: "Float",
+            #self.isInteger: "Integer",
+           # self.isFloat: "Float",
             self.isvalidIdentifier: "Identifier",
-            self.isDelimiter: "Delimeter"
         }
 
-    def isDelimiter(self, ch):
+    def isDelimiter(self,ch):
         if ch in self.delimiters:
             return True
         return False
 
-    def isOperator(self, ch):
+    def isOperator(self,ps,pe, ch):
         if ch in self.operator:
             return True
         return False
 
-    def isvalidIdentifier(self, lexeme):
-        if lexeme[0] in self.alphabets:
-            return True
-        return False
-
-    def isKeyword(self, lexeme):
+    def isKeyword(self,ps,pe, lexeme):
         if lexeme in self.keywords:
             return True
         return False
+    
+    def isvalidIdentifier(self,ps,pe, lexeme):
+        lex = lexeme.lstrip()
+        vaild = self.alphabets+["_"]
+        if len(lex) > 0:
+            for i in lex:
+                if i not in vaild:
+                    print(errors.IdentifierError(ps,pe,"Invalid Identifier name defined","'"+lex+"'").as_string())
+                    exit(self)
+                else:
+                    return True
+        return 
 
-    def isInteger(self, lexeme):
+    def isInteger(self,ps,pe, lexeme):
         if len(lexeme) < 0:
             return False
         for i in lexeme:
@@ -49,7 +57,7 @@ class Tokens:
                 return True
         return False
 
-    def isFloat(self, lexeme):
+    def isFloat(self,ps,pe, lexeme):
         if len(lexeme) > 0:
             return False
         for i in lexeme:
